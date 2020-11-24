@@ -1,5 +1,0 @@
-concert	3
-montreal	1
-sale	2
-ticket	2
-toronto	3
