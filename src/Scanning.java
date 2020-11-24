@@ -19,7 +19,7 @@ public class Scanning {
 		FileWriter myPostings = new FileWriter("src//postings.txt");
 		
 		File[] fileArray1=new File("src//bbc").listFiles();    
-		FileWriter writer;
+		//FileWriter writer;
 		//System.out.println(fileArray1.length);
 		int count = 0;
 		
@@ -65,13 +65,23 @@ public class Scanning {
 						if(!dictionary.containsKey(next2))
 						{
 							dictionary.put(next2, 1);
-							pDictionary.put(next2, 1);
 						}
 						else if(dictionary.containsKey(next2))
 						{
 							int num = dictionary.get(next2);
 							dictionary.remove(next2);
 							dictionary.put(next2, num+1);
+							//pDictionary.put(next2, num+1);
+						}
+						
+						if(!pDictionary.containsKey(next2))
+						{
+							pDictionary.put(next2, 1);
+						}
+						else if(pDictionary.containsKey(next2))
+						{
+							int num = pDictionary.get(next2);
+							pDictionary.remove(next2);
 							pDictionary.put(next2, num+1);
 						}
 						//System.out.println(s.next() + " " + count);
@@ -97,13 +107,16 @@ public class Scanning {
 		{
 			ArrayList<String> listVal3 = new ArrayList<String>(postings.get(listVal2.get(i)).keySet());
 			Collections.sort(listVal3);
-			myPostings.write("\n\n" + listVal2.get(i));
-			for(int j = 0; j<listVal3.size(); j++)
+			myPostings.write("\n\n.D " + listVal2.get(i));
+			for(int j = 1; j<listVal3.size(); j++)
 			{
 				myPostings.write("\n" + listVal3.get(j) + "  " + postings.get(listVal2.get(i)).get(listVal3.get(j)));
 			}
 		}
 
+		myDictionary.close();
+		myPostings.close();
+		
 	}
 
 
