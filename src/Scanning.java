@@ -13,10 +13,51 @@ public class Scanning {
 
 	public static HashMap<String, Integer> dictionary = new HashMap<String, Integer>();
 	public static TreeMap<String, HashMap<String, Integer>> postings = new TreeMap<String, HashMap<String, Integer>>();
+	public static boolean stop_words = false;
 	public static void main(String args[]) throws IOException{
 		
 		FileWriter myDictionary = new FileWriter("src//dictionary.txt");
 		FileWriter myPostings = new FileWriter("src//postings.txt");
+		
+		
+		String word;
+		ArrayList<String> stopList = new ArrayList<String>();
+		Scanner stopScan = new Scanner(new BufferedReader(new FileReader("src//common_words")));
+		Scanner input = new Scanner(System.in);
+
+		//adding stop_words in stopList
+		while(stopScan.hasNext())
+		{
+			word = stopScan.next();
+			stopList.add(word);
+		}
+
+		stopScan.close();
+
+		//User input for stop word removal
+		System.out.println("Do you want to turn on the stop word removal? (y/n)");
+		String answer = input.next();
+		while(!answer.equals("y") || !answer.equals("n"))
+		{
+			if(answer.equals("y"))
+			{
+				stop_words = true;
+				System.out.println("Stop word removal: ON");
+				break;
+			}
+			else if(answer.equals("n"))
+			{
+				stop_words = false;
+				System.out.println("Stop word removal: OFF");
+				break;
+			}
+			else
+			{
+				System.out.println("Invalid answer. Do you want to turn on the stop word removal? (y/n)");
+				answer = input.next();
+			}
+		}
+		
 		
 		File[] fileArray1=new File("src//bbc").listFiles();    
 		//FileWriter writer;
@@ -95,13 +136,40 @@ public class Scanning {
 
 		}
 		
+		if(stop_words == true)
+		{
+			for(int i=0; i < stopList.size(); i++)
+			{
+				if(dictionary.containsKey(stopList.get(i)))
+				{
+					dictionary.remove(stopList.get(i));
+					postings.remove(stopList.get(i));
+				}
+			}
+		}
+
+		ArrayList<String> listVal2 = new ArrayList<String>(postings.keySet());
+		if(stop_words == true)
+		{
+			for(int i=0; i < postings.size(); i++)
+			{
+				for(int j=0; j < stopList.size(); j++)
+				{
+					if(postings.get(listVal2.get(i)).containsKey(stopList.get(j)))
+					{
+						postings.get(listVal2.get(i)).remove(stopList.get(j));
+					}
+				}
+			}
+		}
+		
 		ArrayList<String> listVal = new ArrayList<String>(dictionary.keySet());
 		Collections.sort(listVal);
 		for (int i = 1; i < listVal.size(); i++) {
 			myDictionary.write("\n" + listVal.get(i) + "  " + dictionary.get(listVal.get(i)));
 		}
 		
-		ArrayList<String> listVal2 = new ArrayList<String>(postings.keySet());
+		
 		System.out.println(listVal2.size());
 		for(int i = 0; i<listVal2.size(); i++)
 		{
