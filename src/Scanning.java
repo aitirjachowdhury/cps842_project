@@ -99,20 +99,45 @@ public class Scanning {
 					Scanner s=new Scanner(f2); // to read the files
 					//count++;
 					HashMap<String, Integer> pDictionary = new HashMap<String, Integer>();
+					ArrayList<String> temp = new ArrayList<String>();
 					while(s.hasNext())
 					{
 						String next = s.next();
 						String next2=next.replaceAll("[^a-zA-Z]", "").toLowerCase();
-						if(!dictionary.containsKey(next2))
+						
+						//if(!dictionary.containsKey(next2))
+						/*if(!temp.contains(next2))
 						{
 							dictionary.put(next2, 1);
+							temp.add(next2);
 						}
-						else if(dictionary.containsKey(next2))
+						//else if(dictionary.containsKey(next2))
+						else
 						{
 							int num = dictionary.get(next2);
 							dictionary.remove(next2);
 							dictionary.put(next2, num+1);
 							//pDictionary.put(next2, num+1);
+						}*/
+						if(!temp.contains(next2))
+						{
+							if(!dictionary.containsKey(next2))
+							{
+
+								dictionary.put(next2, 1);
+								temp.add(next2);
+
+							}
+
+							else
+							{
+
+								//int freq = postings.get(term).size();
+								int num = dictionary.get(next2);
+								dictionary.remove(next2);
+								dictionary.put(next2, num+1);
+								temp.add(next2);
+							}			
 						}
 						
 						if(!pDictionary.containsKey(next2))
