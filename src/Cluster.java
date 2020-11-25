@@ -50,6 +50,7 @@ public class Cluster {
 			otherIteration();
 		}
 		//Evaluation?
+		System.out.println("Cluster 1" + cluster1);
 
 	}
 
@@ -108,11 +109,27 @@ public class Cluster {
 
 	//Calculate similarity between centroid and each document
 	public double calculateSim(HashMap<String, Double> centroid, HashMap<String, Double> docW){
-		
+		double dotP = 0.0;
 
-
-
-		return 0.0;
+		if(centroid.size() < dowW.size()){
+			for (Map.Entry<HashMap<String, Double>> term : centroid.entrySet()) 
+			{	
+				String word = term.getKey();
+				if(docW.containsKey(word)){
+					dotP += term.getValue() * docW.get(word);
+				}
+			}
+		}
+		else{
+			for (Map.Entry<HashMap<String, Double>> term : docW.entrySet()) 
+			{	
+				String word = term.getKey();
+				if(docW.containsKey(word)){
+					dotP += term.getValue() * centroid.get(word);
+				}
+			}
+		}
+		return dotP;
 	}
 
 	//Find max value between the 5 similarity scores
@@ -131,44 +148,146 @@ public class Cluster {
 		int c4Size = cluster4.size();
 		int c5Size = cluster5.size();
 
+		//Hashmap to store centroid weight
 		HashMap<String, Double> input = new HashMap<String, Double>();
+		//Hashmap to store values after dividing by size
+		HashMap<String, Double> finalCent = new HashMap<String, Double>();
 		//loop through first cluster		
 		for(int i = 0; i < c1Size; i++){
-
-
-			//centroid.put("centroid1", input);
+			//get the weight vector of each document in cluster 1
+			for (Map.Entry<HashMap<String, Double>> term : docWeight.getValue(cluster1.get(i)).entrySet()) 
+			{	
+				//If term exists, add the new weight to the stored one
+				if(input.containsKey(term.getKey())){
+					double og = input.get(term.getKey());
+					double add = term.getValue();
+					input.put(term.getKey(), og+add);
+				}
+				//If does not exist, put the term and weight directly
+				else{
+					input.put(term.getKey(), term.getValue());
+				}
+			}
+			//Loop through input and divide by cluster size
+			for (Map.Entry<HashMap<String, Double>> term : input.entrySet()) 
+			{	
+				double result = term.getValue()/c1size;
+				finalCent.put(term.getKey(), result);
+			}
+			//Put in centroid TreeMap
+			centroid.put("centroid1", finalCent);
 		}
 
 		input = new HashMap<String, Double>();
+		finalCent = new HashMap<String, Double>();
 		//loop through second cluster				
 		for(int i = 0; i < c2Size; i++){
-			
-
-			//centroid.put("centroid2", input);
+			//get the weight vector of each document in cluster 2
+			for (Map.Entry<HashMap<String, Double>> term : docWeight.getValue(cluster2.get(i)).entrySet()) 
+			{	
+				//If term exists, add the new weight to the stored one
+				if(input.containsKey(term.getKey())){
+					double og = input.get(term.getKey());
+					double add = term.getValue();
+					input.put(term.getKey(), og+add);
+				}
+				//If does not exist, put the term and weight directly
+				else{
+					input.put(term.getKey(), term.getValue());
+				}
+			}
+			//Loop through input and divide by cluster size
+			for (Map.Entry<HashMap<String, Double>> term : input.entrySet()) 
+			{	
+				double result = term.getValue()/c2size;
+				finalCent.put(term.getKey(), result);
+			}
+			//Put in centroid TreeMap
+			centroid.put("centroid2", finalCent);
 		}
 
 		input = new HashMap<String, Double>();
+		finalCent = new HashMap<String, Double>();
 		//loop through third cluster		
 		for(int i = 0; i < c3Size; i++){
-			
-
-			//centroid.put("centroid3", input);			
+			//get the weight vector of each document in cluster 2
+			for (Map.Entry<HashMap<String, Double>> term : docWeight.getValue(cluster3.get(i)).entrySet()) 
+			{	
+				//If term exists, add the new weight to the stored one
+				if(input.containsKey(term.getKey())){
+					double og = input.get(term.getKey());
+					double add = term.getValue();
+					input.put(term.getKey(), og+add);
+				}
+				//If does not exist, put the term and weight directly
+				else{
+					input.put(term.getKey(), term.getValue());
+				}
+			}	
+			//Loop through input and divide by cluster size
+			for (Map.Entry<HashMap<String, Double>> term : input.entrySet()) 
+			{	
+				double result = term.getValue()/c3size;
+				finalCent.put(term.getKey(), result);
+			}
+			//Put in centroid TreeMap
+			centroid.put("centroid3", finalCent);			
 		}
 
 		input = new HashMap<String, Double>();
+		finalCent = new HashMap<String, Double>();
 		//loop through fourth cluster		
 		for(int i = 0; i < c4Size; i++){
-
-
-			//centroid.put("centroid4", );			
+			//get the weight vector of each document in cluster 2
+			for (Map.Entry<HashMap<String, Double>> term : docWeight.getValue(cluster4.get(i)).entrySet()) 
+			{	
+				//If term exists, add the new weight to the stored one
+				if(input.containsKey(term.getKey())){
+					double og = input.get(term.getKey());
+					double add = term.getValue();
+					input.put(term.getKey(), og+add);
+				}
+				//If does not exist, put the term and weight directly
+				else{
+					input.put(term.getKey(), term.getValue());
+				}
+			}
+			//Loop through input and divide by cluster size
+			for (Map.Entry<HashMap<String, Double>> term : input.entrySet()) 
+			{	
+				double result = term.getValue()/c4size;
+				finalCent.put(term.getKey(), result);
+			}
+			//Put in centroid TreeMap
+			centroid.put("centroid4", finalCent);			
 		}
 
 		input = new HashMap<String, Double>();
+		finalCent = new HashMap<String, Double>();
 		//loop through fifth cluster		
 		for(int i = 0; i < c5Size; i++){
-			
-
-			//centroid.put("centroid5", input);
+			//get the weight vector of each document in cluster 2
+			for (Map.Entry<HashMap<String, Double>> term : docWeight.getValue(cluster5.get(i)).entrySet()) 
+			{	
+				//If term exists, add the new weight to the stored one
+				if(input.containsKey(term.getKey())){
+					double og = input.get(term.getKey());
+					double add = term.getValue();
+					input.put(term.getKey(), og+add);
+				}
+				//If does not exist, put the term and weight directly
+				else{
+					input.put(term.getKey(), term.getValue());
+				}
+			}	
+			//Loop through input and divide by cluster size
+			for (Map.Entry<HashMap<String, Double>> term : input.entrySet()) 
+			{	
+				double result = term.getValue()/c5Size;
+				finalCent.put(term.getKey(), result);
+			}
+			//Put in centroid TreeMap
+			centroid.put("centroid5", finalCent);
 		}
 	}
 }
