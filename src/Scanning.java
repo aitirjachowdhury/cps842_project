@@ -58,6 +58,7 @@ public class Scanning {
 			}
 		}
 		
+		input.close();
 		
 		File[] fileArray1=new File("src//bbc").listFiles();    
 		//FileWriter writer;
@@ -105,20 +106,8 @@ public class Scanning {
 						String next = s.next();
 						String next2=next.replaceAll("[^a-zA-Z]", "").toLowerCase();
 						
-						//if(!dictionary.containsKey(next2))
-						/*if(!temp.contains(next2))
+						if(next2.length() > 2)
 						{
-							dictionary.put(next2, 1);
-							temp.add(next2);
-						}
-						//else if(dictionary.containsKey(next2))
-						else
-						{
-							int num = dictionary.get(next2);
-							dictionary.remove(next2);
-							dictionary.put(next2, num+1);
-							//pDictionary.put(next2, num+1);
-						}*/
 						if(!temp.contains(next2))
 						{
 							if(!dictionary.containsKey(next2))
@@ -152,7 +141,9 @@ public class Scanning {
 						}
 						//System.out.println(s.next() + " " + count);
 					}
+					}
 					String docID = category + f2.getName();
+					docID = docID.replace(".txt", "");
 					//System.out.println(docID);
 					postings.put(docID, pDictionary);
 					s.close();
