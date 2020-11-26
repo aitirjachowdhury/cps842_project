@@ -45,18 +45,18 @@ public class Cluster {
 		docWeight.put("s001", storage.get(3));
 		docWeight.put("t001", storage.get(4));
 		//Do clustering 4 more times
-		for(int i = 0; i < 4; i++)
+		for(int i = 0; i < 6; i++)
 		{
 			otherIteration();
 		}
 		//Evaluation?
-		/*
+		
 		System.out.println("size1 - " + cluster1.size());
 		System.out.println("size2 - " + cluster2.size());
 		System.out.println("size3 - " + cluster3.size());
 		System.out.println("size4 - " + cluster4.size());
 		System.out.println("size5 - " + cluster5.size());
-
+/*
 		System.out.println("Cluster 1" + cluster1);
 		System.out.println("Cluster 2" + cluster2);
 		System.out.println("Cluster 3" + cluster3);
