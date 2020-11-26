@@ -50,8 +50,19 @@ public class Cluster {
 			otherIteration();
 		}
 		//Evaluation?
-		System.out.println("Cluster 1" + cluster1);
+		/*
+		System.out.println("size1 - " + cluster1.size());
+		System.out.println("size2 - " + cluster2.size());
+		System.out.println("size3 - " + cluster3.size());
+		System.out.println("size4 - " + cluster4.size());
+		System.out.println("size5 - " + cluster5.size());
 
+		System.out.println("Cluster 1" + cluster1);
+		System.out.println("Cluster 2" + cluster2);
+		System.out.println("Cluster 3" + cluster3);
+		System.out.println("Cluster 4" + cluster4);
+		System.out.println("Cluster 5" + cluster5);
+		*/
 	}
 
 	private void firstIteration() {
@@ -108,11 +119,13 @@ public class Cluster {
 	}
 
 	//Calculate similarity between centroid and each document
-	public double calculateSim(HashMap<String, Double> centroid, HashMap<String, Double> docW){
+	public double calculateSim(HashMap<String, Double> centr, HashMap<String, Double> docW){
 		double dotP = 0.0;
 
-		if(centroid.size() < dowW.size()){
-			for (Map.Entry<HashMap<String, Double>> term : centroid.entrySet()) 
+		//Find the shorter one and do weight calculate based on that
+		if(centr.size() < docW.size()){
+			//Loop and find dot product
+			for (Map.Entry<String, Double> term : centr.entrySet()) 
 			{	
 				String word = term.getKey();
 				if(docW.containsKey(word)){
@@ -121,11 +134,12 @@ public class Cluster {
 			}
 		}
 		else{
-			for (Map.Entry<HashMap<String, Double>> term : docW.entrySet()) 
+			//Loop and find dot product
+			for (Map.Entry<String, Double> term : docW.entrySet()) 
 			{	
 				String word = term.getKey();
-				if(docW.containsKey(word)){
-					dotP += term.getValue() * centroid.get(word);
+				if(centr.containsKey(word)){
+					dotP += term.getValue() * centr.get(word);
 				}
 			}
 		}
@@ -155,7 +169,7 @@ public class Cluster {
 		//loop through first cluster		
 		for(int i = 0; i < c1Size; i++){
 			//get the weight vector of each document in cluster 1
-			for (Map.Entry<HashMap<String, Double>> term : docWeight.getValue(cluster1.get(i)).entrySet()) 
+			for (Map.Entry<String, Double> term : docWeight.get(cluster1.get(i)).entrySet()) 
 			{	
 				//If term exists, add the new weight to the stored one
 				if(input.containsKey(term.getKey())){
@@ -169,9 +183,9 @@ public class Cluster {
 				}
 			}
 			//Loop through input and divide by cluster size
-			for (Map.Entry<HashMap<String, Double>> term : input.entrySet()) 
+			for (Map.Entry<String, Double> term : input.entrySet()) 
 			{	
-				double result = term.getValue()/c1size;
+				double result = term.getValue()/c1Size;
 				finalCent.put(term.getKey(), result);
 			}
 			//Put in centroid TreeMap
@@ -183,7 +197,7 @@ public class Cluster {
 		//loop through second cluster				
 		for(int i = 0; i < c2Size; i++){
 			//get the weight vector of each document in cluster 2
-			for (Map.Entry<HashMap<String, Double>> term : docWeight.getValue(cluster2.get(i)).entrySet()) 
+			for (Map.Entry<String, Double> term : docWeight.get(cluster2.get(i)).entrySet()) 
 			{	
 				//If term exists, add the new weight to the stored one
 				if(input.containsKey(term.getKey())){
@@ -197,9 +211,9 @@ public class Cluster {
 				}
 			}
 			//Loop through input and divide by cluster size
-			for (Map.Entry<HashMap<String, Double>> term : input.entrySet()) 
+			for (Map.Entry<String, Double> term : input.entrySet()) 
 			{	
-				double result = term.getValue()/c2size;
+				double result = term.getValue()/c2Size;
 				finalCent.put(term.getKey(), result);
 			}
 			//Put in centroid TreeMap
@@ -211,7 +225,7 @@ public class Cluster {
 		//loop through third cluster		
 		for(int i = 0; i < c3Size; i++){
 			//get the weight vector of each document in cluster 2
-			for (Map.Entry<HashMap<String, Double>> term : docWeight.getValue(cluster3.get(i)).entrySet()) 
+			for (Map.Entry<String, Double> term : docWeight.get(cluster3.get(i)).entrySet()) 
 			{	
 				//If term exists, add the new weight to the stored one
 				if(input.containsKey(term.getKey())){
@@ -225,9 +239,9 @@ public class Cluster {
 				}
 			}	
 			//Loop through input and divide by cluster size
-			for (Map.Entry<HashMap<String, Double>> term : input.entrySet()) 
+			for (Map.Entry<String, Double> term : input.entrySet()) 
 			{	
-				double result = term.getValue()/c3size;
+				double result = term.getValue()/c3Size;
 				finalCent.put(term.getKey(), result);
 			}
 			//Put in centroid TreeMap
@@ -239,7 +253,7 @@ public class Cluster {
 		//loop through fourth cluster		
 		for(int i = 0; i < c4Size; i++){
 			//get the weight vector of each document in cluster 2
-			for (Map.Entry<HashMap<String, Double>> term : docWeight.getValue(cluster4.get(i)).entrySet()) 
+			for (Map.Entry<String, Double> term : docWeight.get(cluster4.get(i)).entrySet()) 
 			{	
 				//If term exists, add the new weight to the stored one
 				if(input.containsKey(term.getKey())){
@@ -253,9 +267,9 @@ public class Cluster {
 				}
 			}
 			//Loop through input and divide by cluster size
-			for (Map.Entry<HashMap<String, Double>> term : input.entrySet()) 
+			for (Map.Entry<String, Double> term : input.entrySet()) 
 			{	
-				double result = term.getValue()/c4size;
+				double result = term.getValue()/c4Size;
 				finalCent.put(term.getKey(), result);
 			}
 			//Put in centroid TreeMap
@@ -267,7 +281,7 @@ public class Cluster {
 		//loop through fifth cluster		
 		for(int i = 0; i < c5Size; i++){
 			//get the weight vector of each document in cluster 2
-			for (Map.Entry<HashMap<String, Double>> term : docWeight.getValue(cluster5.get(i)).entrySet()) 
+			for (Map.Entry<String, Double> term : docWeight.get(cluster5.get(i)).entrySet()) 
 			{	
 				//If term exists, add the new weight to the stored one
 				if(input.containsKey(term.getKey())){
@@ -281,7 +295,7 @@ public class Cluster {
 				}
 			}	
 			//Loop through input and divide by cluster size
-			for (Map.Entry<HashMap<String, Double>> term : input.entrySet()) 
+			for (Map.Entry<String, Double> term : input.entrySet()) 
 			{	
 				double result = term.getValue()/c5Size;
 				finalCent.put(term.getKey(), result);
