@@ -8,6 +8,19 @@ public class Cluster {
 	ArrayList<String> cluster3 = new ArrayList<String>();
 	ArrayList<String> cluster4 = new ArrayList<String>();
 	ArrayList<String> cluster5 = new ArrayList<String>();
+	
+	ArrayList<ArrayList<String>> clusterList = new ArrayList<ArrayList<String>>();
+	ArrayList<Integer> maxNums = new ArrayList<Integer>();
+	double maxCount = 0;
+	
+	double distance1 = 0;
+	double distance2 = 0;
+	double distance3 = 0;
+	double distance4 = 0;
+	double distance5 = 0;
+	
+	int count = 0;
+	
 	ArrayList<HashMap<String, Double>> storage = new ArrayList<HashMap<String, Double>>();
 
 	public Cluster(HashMap<String, HashMap<String, Double>> docWeightInput) {
@@ -51,11 +64,69 @@ public class Cluster {
 		}
 		//Evaluation?
 		
+		
+		clusterList.add(cluster1);
+		clusterList.add(cluster2);
+		clusterList.add(cluster3);
+		clusterList.add(cluster4);
+		clusterList.add(cluster5);
+		
+		for(ArrayList<String> list : clusterList)
+		{
+			int bCount = 0;
+			int eCount = 0;
+			int pCount = 0;
+			int sCount = 0;
+			int tCount = 0;
+			ArrayList<Integer> countList = new ArrayList<Integer>();
+			for(String docID : list)
+			{
+				if(docID.startsWith("b"))
+				{
+					bCount++;
+				}
+				if(docID.startsWith("e"))
+				{
+					eCount++;
+				}
+				if(docID.startsWith("p"))
+				{
+					pCount++;
+				}
+				if(docID.startsWith("s"))
+				{
+					sCount++;
+				}
+				if(docID.startsWith("t"))
+				{
+					tCount++;
+				}
+			}
+			countList.add(bCount);
+			countList.add(eCount);
+			countList.add(pCount);
+			countList.add(sCount);
+			countList.add(tCount);
+			maxCount = maxCount + Collections.max(countList);
+			System.out.println(maxCount);
+		}
+		
+		double purity = maxCount/2225;
+		System.out.println("Purity is " + purity);
+		
+		System.out.println("Tighteness of Cluster 1 = " + distance1);
+		System.out.println("Tighteness of Cluster 2 = " + distance2);
+		System.out.println("Tighteness of Cluster 3 = " + distance3);
+		System.out.println("Tighteness of Cluster 4 = " + distance4);
+		System.out.println("Tighteness of Cluster 5 = " + distance5);
+		
 		System.out.println("size1 - " + cluster1.size());
 		System.out.println("size2 - " + cluster2.size());
 		System.out.println("size3 - " + cluster3.size());
 		System.out.println("size4 - " + cluster4.size());
 		System.out.println("size5 - " + cluster5.size());
+		
+		
 /*
 		System.out.println("Cluster 1" + cluster1);
 		System.out.println("Cluster 2" + cluster2);
@@ -88,6 +159,7 @@ public class Cluster {
 	}
 
 	public void otherIteration() {
+		count++;
 		//recalculate centroid value based on the document weight in cluster
 		recalculateCentroid();
 		//Empty arraylist before clustering again
@@ -115,6 +187,16 @@ public class Cluster {
 			if(cluster == 3){cluster3.add(doc.getKey());}
 			if(cluster == 4){cluster4.add(doc.getKey());}
 			if(cluster == 5){cluster5.add(doc.getKey());}
+			
+			if(count == 6)
+			{
+				double minDistance = 1 - (simScore.get(cluster-1));
+				if(cluster == 1){distance1 = distance1 + minDistance*minDistance;}
+				if(cluster == 2){distance2 = distance2 + minDistance*minDistance;}
+				if(cluster == 3){distance3 = distance3 + minDistance*minDistance;}
+				if(cluster == 4){distance4 = distance4 + minDistance*minDistance;}
+				if(cluster == 5){distance5 = distance5 + minDistance*minDistance;}
+			}
         } 
 	}
 
