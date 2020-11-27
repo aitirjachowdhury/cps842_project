@@ -21,7 +21,6 @@ public class Search {
 
 		while(scanD.hasNext())
 		{
-
 			String term = scanD.next();
 
 			//Finding IDF
@@ -30,8 +29,6 @@ public class Search {
 			double termIDF = Math.log10(div);
 
 			IDF.put(term, termIDF);
-			//System.out.println("term: " + term + "\n IDF: " + termIDF);
-
 		}
 		String next = scanP.next();
 		while(scanP.hasNext())
@@ -46,15 +43,9 @@ public class Search {
 				String next2 = scanP.next();
 				while(!(next2).equals(".D")) {
 					String word = next2;
-					//scanP.next();
 					double freq = scanP.nextInt();
 					double termFreq = 1 + Math.log10(freq);
-					//System.out.println("IDF: " + IDF.get(word) + "\n term freq: " + termFreq);
 					double weight = (IDF.get(word))*termFreq;
-					/*if(weight < 0)
-					{
-						System.out.println("DocID: " + tempDocID + "\nWord: " + word + "\nWeight: " + weight);
-					}*/
 					weightList.put(word, weight);
 					if(scanP.hasNext())
 					{
@@ -66,13 +57,12 @@ public class Search {
 					}
 				}
 			}
-
 			docWeight.put(tempDocID, weightList);
-			System.out.println("DocID: " + tempDocID + "\n" + weightList);
+			//System.out.println("DocID: " + tempDocID + "\n" + weightList);
 
 		}
+		Cluster clustering = new Cluster(docWeight);
 		scanP.close();
 		scanD.close();
-
 	}
 }
