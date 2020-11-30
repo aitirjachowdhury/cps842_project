@@ -1,3 +1,5 @@
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 
 public class Cluster {
@@ -13,6 +15,7 @@ public class Cluster {
 	ArrayList<Integer> maxNums = new ArrayList<Integer>();
 	double maxCount = 0;
 	
+	
 	double distance1 = 0;
 	double distance2 = 0;
 	double distance3 = 0;
@@ -24,6 +27,13 @@ public class Cluster {
 	ArrayList<HashMap<String, Double>> storage = new ArrayList<HashMap<String, Double>>();
 
 	public Cluster(HashMap<String, HashMap<String, Double>> docWeightInput) {
+		FileWriter myEval = null;
+		try {
+			myEval = new FileWriter("src//eval.txt");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		docWeight = docWeightInput;
 		//Use document 1 of each category as centroid
 		centroid.put("centroid1", docWeight.get("b001"));
@@ -43,7 +53,7 @@ public class Cluster {
 		cluster3.add("p001");
 		cluster4.add("s001");
 		cluster5.add("t001");
-		//Remove document in the first interation
+		//Remove document in the first interaction
 		docWeight.remove("b001");
 		docWeight.remove("e001");
 		docWeight.remove("p001");
@@ -57,14 +67,13 @@ public class Cluster {
 		docWeight.put("p001", storage.get(2));
 		docWeight.put("s001", storage.get(3));
 		docWeight.put("t001", storage.get(4));
-		//Do clustering 4 more times
+		//Do clustering 5 more times
 		for(int i = 0; i < 6; i++)
 		{
 			otherIteration();
 		}
-		//Evaluation?
 		
-		
+		//Evaluation
 		clusterList.add(cluster1);
 		clusterList.add(cluster2);
 		clusterList.add(cluster3);
@@ -108,11 +117,20 @@ public class Cluster {
 			countList.add(sCount);
 			countList.add(tCount);
 			maxCount = maxCount + Collections.max(countList);
-			System.out.println(maxCount);
+			//System.out.println(maxCount);
 		}
 		
+		
 		double purity = maxCount/2225;
-		System.out.println("Purity is " + purity);
+		
+		System.out.println("Purity is " + purity + "\n");
+		try {
+			myEval.write("Purity is " + purity + "\n");
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
 		
 		System.out.println("Tighteness of Cluster 1 = " + distance1);
 		System.out.println("Tighteness of Cluster 2 = " + distance2);
@@ -120,20 +138,28 @@ public class Cluster {
 		System.out.println("Tighteness of Cluster 4 = " + distance4);
 		System.out.println("Tighteness of Cluster 5 = " + distance5);
 		
-		System.out.println("size1 - " + cluster1.size());
-		System.out.println("size2 - " + cluster2.size());
-		System.out.println("size3 - " + cluster3.size());
-		System.out.println("size4 - " + cluster4.size());
-		System.out.println("size5 - " + cluster5.size());
+		try {
+			myEval.write("\nTighteness of Cluster 1 = " + distance1 + "\nTighteness of Cluster 2 = " 
+			+ distance2 + "\nTighteness of Cluster 3 = " + distance3 + "\nTighteness of Cluster 4 = " 
+			+ distance4 + "\nTighteness of Cluster 5 = " + distance5);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
+		try {
+			myEval.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
-/*
-		System.out.println("Cluster 1" + cluster1);
+		System.out.println("\nCluster 1" + cluster1);
 		System.out.println("Cluster 2" + cluster2);
 		System.out.println("Cluster 3" + cluster3);
 		System.out.println("Cluster 4" + cluster4);
 		System.out.println("Cluster 5" + cluster5);
-		*/
+		
 	}
 
 	private void firstIteration() {
@@ -199,11 +225,11 @@ public class Cluster {
 			}
         } 
 	}
-
+	
 	//Calculate similarity between centroid and each document
 	public double calculateSim(HashMap<String, Double> centr, HashMap<String, Double> docW){
 		double dotP = 0.0;
-
+		
 		//Find the shorter one and do weight calculate based on that
 		if(centr.size() < docW.size()){
 			//Loop and find dot product
@@ -225,7 +251,29 @@ public class Cluster {
 				}
 			}
 		}
-		return dotP;
+		
+		//normalize with magnitude
+		double centrMag = 0.0;
+		double docWMag = 0.0;
+		for (Map.Entry<String, Double> term : centr.entrySet()) 
+		{	
+			centrMag += Math.pow(term.getValue(), 2);
+		}
+		centrMag = Math.sqrt(centrMag);
+		for (Map.Entry<String, Double> term : docW.entrySet()) 
+		{	
+			docWMag += Math.pow(term.getValue(), 2);
+			
+		}
+		
+		docWMag = Math.sqrt(docWMag);
+		
+		
+		double deno = centrMag * docWMag;
+		double sim = dotP / deno;
+		
+		
+		return sim;
 	}
 
 	//Find max value between the 5 similarity scores
@@ -273,6 +321,7 @@ public class Cluster {
 			//Put in centroid TreeMap
 			centroid.put("centroid1", finalCent);
 		}
+		//System.out.println(centroid);
 
 		input = new HashMap<String, Double>();
 		finalCent = new HashMap<String, Double>();
@@ -387,3 +436,4 @@ public class Cluster {
 		}
 	}
 }
+
