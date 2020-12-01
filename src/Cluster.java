@@ -1,3 +1,6 @@
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
@@ -26,14 +29,11 @@ public class Cluster {
 	
 	ArrayList<HashMap<String, Double>> storage = new ArrayList<HashMap<String, Double>>();
 
-	public Cluster(HashMap<String, HashMap<String, Double>> docWeightInput) {
+	public Cluster(HashMap<String, HashMap<String, Double>> docWeightInput) throws IOException {
 		FileWriter myEval = null;
-		try {
-			myEval = new FileWriter("src//eval.txt");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		FileWriter myClusters = null;
+		myEval = new FileWriter("src//eval.txt");
+		myClusters = new FileWriter("src//clusters.txt");
 		docWeight = docWeightInput;
 		//Use document 1 of each category as centroid
 		centroid.put("centroid1", docWeight.get("b001"));
@@ -117,19 +117,13 @@ public class Cluster {
 			countList.add(sCount);
 			countList.add(tCount);
 			maxCount = maxCount + Collections.max(countList);
-			//System.out.println(maxCount);
 		}
 		
 		
 		double purity = maxCount/2225;
 		
 		System.out.println("Purity is " + purity + "\n");
-		try {
 			myEval.write("Purity is " + purity + "\n");
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
 		
 		
 		System.out.println("Tighteness of Cluster 1 = " + distance1);
@@ -138,27 +132,65 @@ public class Cluster {
 		System.out.println("Tighteness of Cluster 4 = " + distance4);
 		System.out.println("Tighteness of Cluster 5 = " + distance5);
 		
-		try {
-			myEval.write("\nTighteness of Cluster 1 = " + distance1 + "\nTighteness of Cluster 2 = " 
-			+ distance2 + "\nTighteness of Cluster 3 = " + distance3 + "\nTighteness of Cluster 4 = " 
-			+ distance4 + "\nTighteness of Cluster 5 = " + distance5);
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		myEval.write("\nTighteness of Cluster 1 = " + distance1 + "\nTighteness of Cluster 2 = " 
+		+ distance2 + "\nTighteness of Cluster 3 = " + distance3 + "\nTighteness of Cluster 4 = " 
+		+ distance4 + "\nTighteness of Cluster 5 = " + distance5);
+
+		myEval.close();
 		
-		try {
-			myEval.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		System.out.println("\nCluster 1" + cluster1);
+		/*System.out.println("\nCluster 1" + cluster1);
 		System.out.println("Cluster 2" + cluster2);
 		System.out.println("Cluster 3" + cluster3);
 		System.out.println("Cluster 4" + cluster4);
-		System.out.println("Cluster 5" + cluster5);
+		System.out.println("Cluster 5" + cluster5);*/
+		
+		TreeMap<String, String> titles = new TreeMap<String, String>();
+			Scanner scanT = new Scanner(new BufferedReader(new FileReader("src//titles.txt")));
+			String next = "";
+			String ID = "";
+			while(scanT.hasNext())
+			{
+				next = scanT.next();
+				if(next.equals(".D"))
+				{
+					next = scanT.next();
+					ID = next;
+				}
+				next = scanT.next();
+				next = next + scanT.nextLine();
+				titles.put(ID, next);
+			}
+			scanT.close();
+
+		int counting = 0;
+		for(ArrayList<String> list : clusterList)
+		{
+			counting++;
+			String clusterNum = "";
+			switch(counting)
+			{
+				case 1: clusterNum = "Cluster 1";
+				break;
+				case 2: clusterNum = "Cluster 2";
+				break;
+				case 3: clusterNum = "Cluster 3";
+				break;
+				case 4: clusterNum = "Cluster 4";
+				break;
+				case 5: clusterNum = "Cluster 5";
+				break;
+				default: clusterNum = "";
+				break;
+			}
+			myClusters.write("\n--------------------" + clusterNum + "-------------------------\n");
+			for(String id : list)
+			{
+				String t = titles.get(id);
+				myClusters.write("\nDocID: " + id + "\tTitle: " + t);
+			}
+			myClusters.write("\n");
+		}
+		myClusters.close();
 		
 	}
 
