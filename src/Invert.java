@@ -14,6 +14,7 @@ public class Invert {
 	public static HashMap<String, Integer> dictionary = new HashMap<String, Integer>();
 	public static TreeMap<String, HashMap<String, Integer>> postings = new TreeMap<String, HashMap<String, Integer>>();
 	public static boolean stop_words = false;
+	public static boolean stemming = false;
 	public static void main(String args[]) throws IOException{
 		
 		FileWriter myDictionary = new FileWriter("src//dictionary.txt");
@@ -54,6 +55,29 @@ public class Invert {
 			else
 			{
 				System.out.println("Invalid answer. Do you want to turn on the stop word removal? (y/n)");
+				answer = input.next();
+			}
+		}
+		
+		System.out.println("Do you want to turn on stemming? (y/n)");
+		answer = input.next();
+		while(!answer.equals("y") || !answer.equals("n"))
+		{
+			if(answer.equals("y"))
+			{
+				stemming = true;
+				System.out.println("Stemming: ON");
+				break;
+			}
+			else if(answer.equals("n"))
+			{
+				stemming = false;
+				System.out.println("Stemming: OFF");
+				break;
+			}
+			else
+			{
+				System.out.println("Invalid answer. Do you want to turn on stemming? (y/n)");
 				answer = input.next();
 			}
 		}
@@ -115,6 +139,12 @@ public class Invert {
 					{
 						String next = s.next();
 						String next2=next.replaceAll("[^a-zA-Z]", "").toLowerCase();
+						
+						if(stemming == true)
+						{
+							next2 = stemSteps(next2);
+							//System.out.println(next2);
+						}
 						
 						if(next2.length() > 2)
 						{
@@ -209,6 +239,342 @@ public class Invert {
 		myDictionary.close();
 		myPostings.close();
 		myTitles.close();
+	}
+	
+	public static String step1(String term)
+	{
+		String stem;
+		if(term.endsWith("sses"))
+		{
+			stem = term.substring(0, term.length() - 2);
+			return stem;
+		}
+		else if(term.endsWith("ies"))
+		{
+			stem = term.substring(0, term.length() - 3) + "y";
+			return stem;
+		}
+		else if(term.endsWith("ss"))
+		{
+			stem=term;
+			return stem;
+		}
+		else if(term.endsWith("s"))
+		{
+			stem = term.substring(0, term.length() - 1);
+			return stem;
+		}
+		else if(term.endsWith("ed"))
+		{
+			stem = term.substring(0, term.length() - 2);
+			String stem2;
+			if(stem.endsWith("at"))
+			{
+				stem2 = stem.substring(0, term.length() - 2) + "ate";
+				return stem2;
+			}
+			else if(stem.endsWith("bl"))
+			{
+				stem2 = stem.substring(0, term.length() - 2) + "ble";
+				return stem2;
+			}
+			else if(stem.endsWith("iz"))
+			{
+				stem2 = stem.substring(0, term.length() - 2) + "ize";
+				return stem2;
+			}
+			else
+			{
+				return stem;
+			}
+		}
+		else if(term.endsWith("ing"))
+		{
+			stem = term.substring(0, term.length() - 2);
+			String stem2;
+			if(stem.endsWith("at"))
+			{
+				stem2 = stem.substring(0, term.length() - 2) + "ate";
+				return stem2;
+			}
+			else if(stem.endsWith("bl"))
+			{
+				stem2 = stem.substring(0, term.length() - 2) + "ble";
+				return stem2;
+			}
+			else if(stem.endsWith("iz"))
+			{
+				stem2 = stem.substring(0, term.length() - 2) + "ize";
+				return stem2;
+			}
+			else
+			{
+				return stem;
+			}
+		}
+		else
+		{
+			return term;
+		}
+	}
+
+	public static String step2(String term)
+	{
+		String stem;
+		if(term.endsWith("ational"))
+		{
+			stem = term.replace("ational", "ate");
+
+			return stem;
+		}
+		if(term.endsWith("tional"))
+		{
+			stem = term.replace("tional", "tion");
+			return stem;
+		}
+		else if(term.endsWith("enci"))
+		{
+			stem = term.replace("enci", "ence");
+			return stem;
+		}
+		else if(term.endsWith("anci"))
+		{
+			stem = term.replace("anci", "ance");
+			return stem;
+		}
+		else if(term.endsWith("izer"))
+		{
+			stem = term.replace("izer", "ize");
+			return stem;
+		}
+		else if(term.endsWith("abli"))
+		{
+			stem = term.replace("abli", "able");
+			return stem;
+		}
+		else if(term.endsWith("alli"))
+		{
+			stem = term.replace("alli", "al");
+			return stem;
+		}
+		else if(term.endsWith("entli"))
+		{
+			stem = term.replace("entli", "ent");
+			return stem;
+		}
+		else if(term.endsWith("eli"))
+		{
+			stem = term.replace("eli", "e");
+			return stem;
+		}
+		else if(term.endsWith("ousli"))
+		{
+			stem = term.replace("ousli", "ous");
+			return stem;
+		}
+		else if(term.endsWith("ization"))
+		{
+			stem = term.replace("ization", "ize");
+			return stem;
+		}
+		else if(term.endsWith("ation"))
+		{
+			//stem = term.substring(0, term.length() - 5) + "ate";
+			stem = term.replace("ation", "ate");
+			return stem;
+		}
+		else if(term.endsWith("ator"))
+		{
+			stem = term.replace("ator", "ate");
+			return stem;
+		}
+		else if(term.endsWith("alism"))
+		{
+			stem = term.replace("alism", "al");
+			return stem;
+		}
+		else if(term.endsWith("iveness"))
+		{
+			stem = term.replace("iveness", "ive");
+			return stem;
+		}
+		else if(term.endsWith("fulness"))
+		{
+			stem = term.replace("fulness", "ful");
+			return stem;
+		}
+		else if(term.endsWith("ousness"))
+		{
+			stem = term.replace("ousness", "ous");
+			return stem;
+		}
+		else if(term.endsWith("aliti"))
+		{
+			stem = term.replace("aliti", "al");
+			return stem;
+		}
+		else if(term.endsWith("iviti"))
+		{
+			stem = term.replace("iviti", "ive");
+			return stem;
+		}
+		else if(term.endsWith("biliti"))
+		{
+			stem = term.replace("biliti", "ble");
+			return stem;
+		}
+
+		else
+		{
+			return term;
+		}
+	}
+
+	public static String step3(String term)
+	{
+		String stem;
+		if(term.endsWith("icate"))
+		{
+			stem = term.replace("icate", "ic");
+			return stem;
+		}
+		if(term.endsWith("ative"))
+		{
+			stem = term.replace("ative", "");
+			return stem;
+		}
+		if(term.endsWith("alize"))
+		{
+			stem = term.replace("alize", "al");
+			return stem;
+		}
+		if(term.endsWith("iciti"))
+		{
+			stem = term.replace("iciti", "ic");
+			return stem;
+		}
+		if(term.endsWith("ical"))
+		{
+			stem = term.replace("ical", "ic");
+			return stem;
+		}
+		if(term.endsWith("ful"))
+		{
+			stem = term.replace("ful", "");
+			return stem;
+		}
+		if(term.endsWith("ness"))
+		{
+			stem = term.replace("ness", "");
+			return stem;
+		}
+		else
+		{
+			return term;
+		}
+	}
+
+	public static String step4(String term)
+	{
+		String stem;
+		if(term.endsWith("ance"))
+		{
+			stem = term.substring(0, term.length() - 4);
+			return stem;
+		}
+		else if(term.endsWith("ence"))
+		{
+			stem = term.substring(0, term.length() - 4);
+			return stem;
+		}
+		else if(term.endsWith("er"))
+		{
+			stem = term.substring(0, term.length() - 2);
+			return stem;
+		}
+		else if(term.endsWith("ic"))
+		{
+			stem = term.substring(0, term.length() - 2);
+			return stem;
+		}
+		else if(term.endsWith("able"))
+		{
+			stem = term.substring(0, term.length() - 4);
+			return stem;
+		}
+		else if(term.endsWith("ible"))
+		{
+			stem = term.substring(0, term.length() - 4);
+			return stem;
+		}
+		else if(term.endsWith("ant"))
+		{
+			stem = term.substring(0, term.length() - 3);
+			return stem;
+		}
+		else if(term.endsWith("ment"))
+		{
+			stem = term.substring(0, term.length() - 4);
+			return stem;
+		}
+		else if(term.endsWith("ent"))
+		{
+			stem = term.substring(0, term.length() - 3);
+			return stem;
+		}
+		else if(term.endsWith("ou"))
+		{
+			stem = term.substring(0, term.length() - 2);
+			return stem;
+		}
+		else if(term.endsWith("ism"))
+		{
+			stem = term.substring(0, term.length() - 3);
+			return stem;
+		}
+		else if(term.endsWith("ate"))
+		{
+			stem = term.substring(0, term.length() - 3) + "e";
+			return stem;
+		}
+		else if(term.endsWith("iti"))
+		{
+			stem = term.substring(0, term.length() - 3);
+			return stem;
+		}
+		else if(term.endsWith("ous"))
+		{
+			stem = term.substring(0, term.length() - 3);
+			return stem;
+		}
+		else if(term.endsWith("ive"))
+		{
+			stem = term.substring(0, term.length() - 3);
+			return stem;
+		}
+		else if(term.endsWith("ize"))
+		{
+			stem = term.substring(0, term.length() - 3);
+			return stem;
+		}
+		else if(term.endsWith("i"))
+		{
+			stem = term.substring(0, term.length() - 1);
+			return stem;
+		}
+		else
+		{
+			return term;
+		}
+	}
+
+	public static String stemSteps(String term)
+	{
+		String stepOne = step1(term);
+		String stepTwo = step2(stepOne);
+		String stepThree = step3(stepTwo);
+		String stepFour = step4(stepThree);
+		return stepFour;
 	}
 
 
