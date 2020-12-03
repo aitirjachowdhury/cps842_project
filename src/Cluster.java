@@ -13,6 +13,13 @@ public class Cluster {
 	ArrayList<String> cluster3 = new ArrayList<String>();
 	ArrayList<String> cluster4 = new ArrayList<String>();
 	ArrayList<String> cluster5 = new ArrayList<String>();
+
+
+	HashMap<String, Double> sortedScores1 = new LinkedHashMap<String, Double>();
+	HashMap<String, Double> sortedScores2 = new LinkedHashMap<String, Double>();
+	HashMap<String, Double> sortedScores3 = new LinkedHashMap<String, Double>();
+	HashMap<String, Double> sortedScores4 = new LinkedHashMap<String, Double>();
+	HashMap<String, Double> sortedScores5 = new LinkedHashMap<String, Double>();
 	
 	ArrayList<ArrayList<String>> clusterList = new ArrayList<ArrayList<String>>();
 	ArrayList<Integer> maxNums = new ArrayList<Integer>();
@@ -32,8 +39,10 @@ public class Cluster {
 	public Cluster(HashMap<String, HashMap<String, Double>> docWeightInput) throws IOException {
 		FileWriter myEval = null;
 		FileWriter myClusters = null;
+		FileWriter mySummaries = null;
 		myEval = new FileWriter("src//eval.txt");
 		myClusters = new FileWriter("src//clusters.txt");
+		mySummaries = new FileWriter("src//summaries.txt");
 		docWeight = docWeightInput;
 		//Use document 1 of each category as centroid
 		centroid.put("centroid1", docWeight.get("b001"));
@@ -163,21 +172,39 @@ public class Cluster {
 			scanT.close();
 
 		int counting = 0;
+		//HashMap<Double, String> swapVals = new HashMap<Double, String>();
 		for(ArrayList<String> list : clusterList)
 		{
 			counting++;
 			String clusterNum = "";
+			HashMap<Double, String> summary = new HashMap<Double, String>();
 			switch(counting)
 			{
-				case 1: clusterNum = "Cluster 1";
+				case 1: 
+					clusterNum = "Cluster 1";
+					for(Map.Entry<String, Double> entry : sortedScores1.entrySet())
+						summary.put(entry.getValue(), entry.getKey());
+				//summary = new HashMap<String, Double>(sortedScores1);
 				break;
-				case 2: clusterNum = "Cluster 2";
+				case 2: 
+					clusterNum = "Cluster 2";
+					for(Map.Entry<String, Double> entry : sortedScores2.entrySet())
+						summary.put(entry.getValue(), entry.getKey());
 				break;
-				case 3: clusterNum = "Cluster 3";
+				case 3: 
+					clusterNum = "Cluster 3";
+					for(Map.Entry<String, Double> entry : sortedScores3.entrySet())
+						summary.put(entry.getValue(), entry.getKey());
 				break;
-				case 4: clusterNum = "Cluster 4";
+				case 4: 
+					clusterNum = "Cluster 4";
+					for(Map.Entry<String, Double> entry : sortedScores4.entrySet())
+						summary.put(entry.getValue(), entry.getKey());
 				break;
-				case 5: clusterNum = "Cluster 5";
+				case 5: 
+					clusterNum = "Cluster 5";
+					for(Map.Entry<String, Double> entry : sortedScores5.entrySet())
+						summary.put(entry.getValue(), entry.getKey());
 				break;
 				default: clusterNum = "";
 				break;
@@ -189,8 +216,26 @@ public class Cluster {
 				myClusters.write("\nDocID: " + id + "\tTitle: " + t);
 			}
 			myClusters.write("\n");
+
+			mySummaries.write("\n--------------------" + clusterNum + "-------------------------\n");
+			mySummaries.write("Summary: " + "\n");
+			ArrayList<String> sumArr = new ArrayList<String>(summary.values());
+			for (int i = 1; i < 4; i++)
+			{
+				String d = sumArr.get(i);
+				for(Map.Entry<String, String> entry : titles.entrySet())
+				{
+					if (d.equals(entry.getKey()))
+					{
+						String s = entry.getValue();
+						mySummaries.write("\t" + i + ". " + s + " --> DocID: " + entry.getKey() + "\n");
+					}	
+				}
+			}
+			mySummaries.write("\n");
 		}
 		myClusters.close();
+		mySummaries.close();
 		
 	}
 
@@ -238,16 +283,133 @@ public class Cluster {
 				double result = calculateSim(currCentroid.getValue(), doc.getValue());
 				simScore.add(result);
 			}
-			int cluster = findCluster(simScore);
+			int cluster = findCluster(simScore);	
+
+			HashMap<String, Double> scoreList1 = new HashMap<String, Double>();
+			HashMap<String, Double> scoreList2 = new HashMap<String, Double>();
+			HashMap<String, Double> scoreList3 = new HashMap<String, Double>();
+			HashMap<String, Double> scoreList4 = new HashMap<String, Double>();
+			HashMap<String, Double> scoreList5 = new HashMap<String, Double>();
+			
 			//Add document to cluster based on which pos is max value
+			if(cluster == 1){cluster1.add(doc.getKey()); scoreList1.put(doc.getKey(), simScore.get(cluster-1));}
+			if(cluster == 2){cluster2.add(doc.getKey()); scoreList2.put(doc.getKey(), simScore.get(cluster-1));}
+			if(cluster == 3){cluster3.add(doc.getKey()); scoreList3.put(doc.getKey(), simScore.get(cluster-1));}
+			if(cluster == 4){cluster4.add(doc.getKey()); scoreList4.put(doc.getKey(), simScore.get(cluster-1));}
+			if(cluster == 5){cluster5.add(doc.getKey()); scoreList5.put(doc.getKey(), simScore.get(cluster-1));}
+			
+			
+			
+			/*
 			if(cluster == 1){cluster1.add(doc.getKey());}
 			if(cluster == 2){cluster2.add(doc.getKey());}
 			if(cluster == 3){cluster3.add(doc.getKey());}
 			if(cluster == 4){cluster4.add(doc.getKey());}
 			if(cluster == 5){cluster5.add(doc.getKey());}
 			
+			if(cluster == 1){cluster1.add(doc.getKey()); scoreList1.add(simScore.get(cluster-1));}
+			if(cluster == 2){cluster2.add(doc.getKey()); scoreList2.add(simScore.get(cluster-1));}
+			if(cluster == 3){cluster3.add(doc.getKey()); scoreList3.add(simScore.get(cluster-1));}
+			if(cluster == 4){cluster4.add(doc.getKey()); scoreList4.add(simScore.get(cluster-1));}
+			if(cluster == 5){cluster5.add(doc.getKey()); scoreList5.add(simScore.get(cluster-1));}
+			
+			 */
+			
+			
 			if(count == 6)
 			{
+				//sorting scoreList by value
+				List<String> scoreKeys = new ArrayList<String>(scoreList1.keySet());
+				List<Double> scoreVals = new ArrayList<Double>(scoreList1.values());
+				Collections.sort(scoreKeys, Collections.reverseOrder());
+				Collections.sort(scoreVals, Collections.reverseOrder());
+				
+				for(double v : scoreVals)
+				{
+					for(String k : scoreKeys)
+					{
+						double comp1 = scoreList1.get(k);
+						double comp2 = v;			
+						if (comp1 == comp2)
+						{
+							sortedScores1.put(k, v);
+							break;
+						}
+					}
+				}
+				scoreKeys = new ArrayList<String>(scoreList2.keySet());
+				scoreVals = new ArrayList<Double>(scoreList2.values());
+				Collections.sort(scoreKeys, Collections.reverseOrder());
+				Collections.sort(scoreVals, Collections.reverseOrder());
+				
+				for(double v : scoreVals)
+				{
+					for(String k : scoreKeys)
+					{
+						double comp1 = scoreList2.get(k);
+						double comp2 = v;			
+						if (comp1 == comp2)
+						{
+							sortedScores2.put(k, v);
+							break;
+						}
+					}
+				}
+				scoreKeys = new ArrayList<String>(scoreList3.keySet());
+				scoreVals = new ArrayList<Double>(scoreList3.values());
+				Collections.sort(scoreKeys, Collections.reverseOrder());
+				Collections.sort(scoreVals, Collections.reverseOrder());
+				
+				for(double v : scoreVals)
+				{
+					for(String k : scoreKeys)
+					{
+						double comp1 = scoreList3.get(k);
+						double comp2 = v;			
+						if (comp1 == comp2)
+						{
+							sortedScores3.put(k, v);
+							break;
+						}
+					}
+				}
+				scoreKeys = new ArrayList<String>(scoreList4.keySet());
+				scoreVals = new ArrayList<Double>(scoreList4.values());
+				Collections.sort(scoreKeys, Collections.reverseOrder());
+				Collections.sort(scoreVals, Collections.reverseOrder());
+				
+				for(double v : scoreVals)
+				{
+					for(String k : scoreKeys)
+					{
+						double comp1 = scoreList4.get(k);
+						double comp2 = v;			
+						if (comp1 == comp2)
+						{
+							sortedScores4.put(k, v);
+							break;
+						}
+					}
+				}
+				scoreKeys = new ArrayList<String>(scoreList5.keySet());
+				scoreVals = new ArrayList<Double>(scoreList5.values());
+				Collections.sort(scoreKeys, Collections.reverseOrder());
+				Collections.sort(scoreVals, Collections.reverseOrder());
+				
+				for(double v : scoreVals)
+				{
+					for(String k : scoreKeys)
+					{
+						double comp1 = scoreList5.get(k);
+						double comp2 = v;			
+						if (comp1 == comp2)
+						{
+							sortedScores5.put(k, v);
+							break;
+						}
+					}
+				}
+				
 				double minDistance = 1 - (simScore.get(cluster-1));
 				if(cluster == 1){distance1 = distance1 + minDistance*minDistance;}
 				if(cluster == 2){distance2 = distance2 + minDistance*minDistance;}

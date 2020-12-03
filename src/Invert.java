@@ -85,12 +85,7 @@ public class Invert {
 		input.close();
 		
 		File[] fileArray1=new File("src//bbc").listFiles();
-		for(File f1: fileArray1)
-		{
-			System.out.println(f1.getName());
-		}
-		//FileWriter writer;
-		//System.out.println(fileArray1.length);
+		
 		int count = 0;
 		
 		
