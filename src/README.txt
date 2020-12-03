@@ -11,3 +11,5 @@ Step 4: Once Invert.java is terminated, user then runs Search.java which will fi
 Step 5: User may open the file eval.txt, which also shows the purity and tightness of each cluster. 
 
 Step 6: User may open the file clusters.txt, which shows the documents with their titles in each cluster. 
+
+Step 7: User may open the file summaries.txt which shows the top 3 documents that are the closest to the centroid.
